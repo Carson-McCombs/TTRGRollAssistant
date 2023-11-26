@@ -23,7 +23,7 @@ class StatViewModel(private val dao: StatDao): ViewModel() {
     //private val _unrelatedStats: StateFlow<Map<Int, List<Int>>> = dao.getNonDependentStats().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
 
 
-    val relatedStats = _relatedStats
+    //val relatedStats = _relatedStats
     val unrelatedStats = _relatedStats.combine(_statIDs){ relStatIDs, ids ->
         getUnrelatedStats(ids, relStatIDs)
     }

@@ -5,7 +5,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -62,8 +61,9 @@ fun StatNavHost(
     val statWithModifiers: State<StatWithModifiers?> = viewmodel.getStatWithModifiers(statID = statID).collectAsState(
         StatWithModifiers()
     )
-    if (statWithModifiers.value == null) return
 
+
+    if (statWithModifiers.value == null) return
     val stat = statWithModifiers.value!!.stat
     val statTotal = viewmodel.statTotals.collectAsState(initial = emptyMap()).value[stat.id]?: 0
     //Log.d("Twab", "$statID : $statTotal")
@@ -71,7 +71,7 @@ fun StatNavHost(
 
     val navIndex = remember(statID, "navIndex"){ mutableStateOf(0) }
 
-    val navLocations = arrayOf("rollable","modifiers","settings")
+    //val navLocations = arrayOf("rollable","modifiers","settings")
 
     val showNavigationArrows = remember{ mutableStateOf(false) }
 
@@ -89,14 +89,23 @@ fun StatNavHost(
                     colors = IconButtonDefaults.iconButtonColors(disabledContainerColor = Color.Transparent, disabledContentColor = Color.Transparent),
                     enabled = (navIndex.value > 0) && !showNavigationArrows.value,
                     onClick = {
+
+
                         if (navIndex.value > 0) {
                             navIndex.value --
                             when (navIndex.value){
-                                1 -> navController.navigate("settings/modifiers")
-                                0 -> navController.navigate("rollable")
+                                0 -> navController.popBackStack("rollable",
+                                    inclusive = false,
+                                    saveState = true
+                                )//navController.navigate("rollable")
+                                1 -> navController.popBackStack("modifiers",
+                                    inclusive = false,
+                                    saveState = true
+                                )//navController.navigate("modifiers")
                             }
                             //navController.navigate(navLocations[navIndex.value])
                         }
+
                     }
                 ){
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Navigates to the Left Page")
@@ -109,7 +118,7 @@ fun StatNavHost(
                         if (navIndex.value < 2) {
                             navIndex.value ++
                             when (navIndex.value){
-                                1 -> navController.navigate("rollable/modifiers")
+                                1 -> navController.navigate("modifiers")
                                 2 -> navController.navigate("settings")
                             }
                             //navController.navigate(navLocations[navIndex.value])
@@ -128,25 +137,18 @@ fun StatNavHost(
         ){
             composable(
                 route = "rollable",
-                enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {-it}).plus(fadeIn(animationSpec = tween(500))) },
-                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {it}).plus(fadeOut(animationSpec = tween(500))) },
+                enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {-it}) },
+                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {-it}).plus(fadeOut(animationSpec = tween(500))) },
                 ){
                 StatRoll(statID, stat.name, statTotal)
             }
             composable(
-                route = "rollable/modifiers",
-                enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {it}).plus(fadeIn(animationSpec = tween(500))) },
-                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {-it}).plus(fadeOut(animationSpec = tween(500))) },
-            ){
-                StatsCompose(
-                    stat = stat,
-                    viewmodel = viewmodel,
-                )
-            }
-            composable(
-                route = "settings/modifiers",
-                enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {-it}).plus(fadeIn(animationSpec = tween(500))) },
-                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {it}).plus(fadeOut(animationSpec = tween(500))) },
+                route = "modifiers",
+                //route = "settings/modifiers",
+                enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {it}) },
+                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {-it}) },
+                popEnterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {-it}) },
+                popExitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {it})  },
             ){
                 StatsCompose(
                     stat = stat,
@@ -155,8 +157,10 @@ fun StatNavHost(
             }
             composable(
                 route = "settings",
-                enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {it}).plus(fadeIn(animationSpec = tween(500))) },
-                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {-it}).plus(fadeOut(animationSpec = tween(500))) },
+                enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {it}) },
+                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {-it}) },
+                popEnterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {it}) },
+                popExitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {it}) },
             ){
                 StatSettings (
                     stat = stat, onEvent = viewmodel::onEvent

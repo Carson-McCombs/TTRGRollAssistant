@@ -39,16 +39,16 @@ import com.carsonmccombs.skillviewerfourcompose.statmodifier.StatModifier
 
 @Composable
 fun StatModifierCard(id: Int, viewmodel: StatViewModel){
-    val statModifier: State<StatModifier> = viewmodel.getStatModifier(id).collectAsState(initial = StatModifier())
+    val statModifier: State<StatModifier?> = viewmodel.getStatModifier(id).collectAsState(initial = null)
 
-
-    val isStatDependent = statModifier.value.childStatID != null
-    if (isStatDependent && statModifier.value.childStatID == null) return
+    statModifier.value?: return
+    val isStatDependent = statModifier.value!!.childStatID != null
+    if (isStatDependent && statModifier.value!!.childStatID == null) return
     val nameMap = viewmodel.statNames.collectAsState()
-    val statName = if (isStatDependent) nameMap.value[statModifier.value.childStatID] else null
+    val statName = if (isStatDependent) nameMap.value[statModifier.value!!.childStatID] else null
 
     val totalMap = viewmodel.statTotals.collectAsState()
-    val statTotal = if (isStatDependent) totalMap.value[statModifier.value.childStatID] else null
+    val statTotal = if (isStatDependent) totalMap.value[statModifier.value!!.childStatID] else null
 
     Card(
         modifier = Modifier
@@ -73,13 +73,13 @@ fun StatModifierCard(id: Int, viewmodel: StatViewModel){
 
             StatModifier_TextField_StringInput(
                 //modifier = Modifier.weight(1f),
-                id = statModifier.value.id,
+                id = statModifier.value!!.id,
                 modifier = Modifier,
-                text = if (isStatDependent) statName?:"N" else statModifier.value.name,
+                text = if (isStatDependent) statName?:"N" else statModifier.value!!.name,
                 onValueChangeEvent = {
                     viewmodel.onEvent(
                         StatEvent.UpsertStatModifier(
-                            statModifier = statModifier.value.copy(
+                            statModifier = statModifier.value!!.copy(
                                 name = it
                             )
                         )
@@ -90,13 +90,13 @@ fun StatModifierCard(id: Int, viewmodel: StatViewModel){
             )
             StatModifier_TextField_StringInput(
                 //modifier = Modifier.weight(1f),
-                id = statModifier.value.id,
+                id = statModifier.value!!.id,
                 modifier = Modifier,
-                text = statModifier.value.type,
+                text = statModifier.value!!.type,
                 onValueChangeEvent = {
                     viewmodel.onEvent(
                         StatEvent.UpsertStatModifier(
-                            statModifier = statModifier.value.copy(
+                            statModifier = statModifier.value!!.copy(
                                 type = it
                             )
                         )
@@ -108,13 +108,13 @@ fun StatModifierCard(id: Int, viewmodel: StatViewModel){
             //Log.d("Twab", "STAT ($id) VALUE: ${statModifier.value.toString()} -> ${statValue.value} ")
             StatModifier_TextField_IntegerInput(
                 //modifier = Modifier.weight(1f),
-                id = statModifier.value.id,
+                id = statModifier.value!!.id,
                 modifier = Modifier,
-                text = if (isStatDependent) statTotal?.toString()?:"0" else statModifier.value.value.toString(),
+                text = if (isStatDependent) statTotal?.toString()?:"0" else statModifier.value!!.value.toString(),
                 onValueChangeEvent = {
                     viewmodel.onEvent(
                         StatEvent.UpsertStatModifier(
-                            statModifier = statModifier.value.copy(
+                            statModifier = statModifier.value!!.copy(
                                 value = it
                             )
                         )
@@ -128,7 +128,7 @@ fun StatModifierCard(id: Int, viewmodel: StatViewModel){
                 modifier = Modifier
                     .aspectRatio(1f)
                     .fillMaxHeight(),
-                onClick = { viewmodel.onEvent(StatEvent.DeleteStatModifier(statModifier.value)) }
+                onClick = { viewmodel.onEvent(StatEvent.DeleteStatModifier(statModifier.value!!)) }
             ) {
                 Icon(
                     //modifier = Modifier.fillMaxSize(),
