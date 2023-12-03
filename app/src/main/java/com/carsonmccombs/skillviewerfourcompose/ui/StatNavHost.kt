@@ -110,7 +110,9 @@ fun StatNavHost(
                 ){
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Navigates to the Left Page")
                 }
-                Text(text = "${stat.name} ( $statTotal ): ${StatBonusStandard().Calculate(statTotal)}")
+                //Text(text = "${stat.name} ( $statTotal ): ${StatBonusStandard().Calculate(statTotal)}")
+                Text(text = "${stat.name} ( $statTotal )")
+
                 IconButton(
                     colors = IconButtonDefaults.iconButtonColors(disabledContainerColor = Color.Transparent, disabledContentColor = Color.Transparent),
                     enabled = navIndex.value < 2 && !showNavigationArrows.value,
@@ -214,9 +216,5 @@ fun CollapsibleCard(id: Int, onStateChange: (Boolean) -> Unit, titleBar: @Compos
 
 
     }
-
-}
-
-fun EnterTransition_SlideRight(){
 
 }
