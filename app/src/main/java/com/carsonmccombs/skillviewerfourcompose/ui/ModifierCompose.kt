@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
@@ -32,10 +33,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.carsonmccombs.skillviewerfourcompose.stat.StatEvent
 import com.carsonmccombs.skillviewerfourcompose.stat.StatViewModel
 import com.carsonmccombs.skillviewerfourcompose.statmodifier.StatModifier
+
+fun clipStringAtLength(string: String?, padAmount: Int = 2, length: Int) : String?{
+    if (string.isNullOrEmpty()) return null
+    if (string.length > length)
+    {
+        return string.dropLast(string.length - length + padAmount).padEnd(length, '.')
+    }
+    return string
+}
 
 @Composable
 fun StatModifierCard(id: Int, viewmodel: StatViewModel){
@@ -45,7 +57,7 @@ fun StatModifierCard(id: Int, viewmodel: StatViewModel){
     val isStatDependent = statModifier.value!!.childStatID != null
     if (isStatDependent && statModifier.value!!.childStatID == null) return
     val nameMap = viewmodel.statNames.collectAsState()
-    val statName = if (isStatDependent) nameMap.value[statModifier.value!!.childStatID] else null
+    val statName = if (isStatDependent) clipStringAtLength(string = nameMap.value[statModifier.value!!.childStatID], length = 10) else null
 
     val totalMap = viewmodel.statTotals.collectAsState()
     val statTotal = if (isStatDependent) totalMap.value[statModifier.value!!.childStatID] else null
@@ -75,7 +87,7 @@ fun StatModifierCard(id: Int, viewmodel: StatViewModel){
                 //modifier = Modifier.weight(1f),
                 id = statModifier.value!!.id,
                 modifier = Modifier,
-                text = if (isStatDependent) statName?:"N" else statModifier.value!!.name,
+                text = if (isStatDependent) statName?:"NULL" else statModifier.value!!.name,
                 onValueChangeEvent = {
                     viewmodel.onEvent(
                         StatEvent.UpsertStatModifier(
@@ -171,7 +183,8 @@ private fun StatModifier_TextField_StringInput(modifier: Modifier, text: String,
                     Text(
                         text = labelText,
                         color = Color.LightGray,
-                        style = MaterialTheme.typography.labelSmall.copy(color = Color.LightGray)
+                        style = MaterialTheme.typography.labelSmall.copy(color = Color.LightGray),
+                        overflow = TextOverflow.Clip
                     )
                 }
                 innerTextField()
@@ -186,6 +199,7 @@ private fun StatModifier_TextField_StringInput(modifier: Modifier, text: String,
 @Composable
 private fun StatModifier_TextField_IntegerInput(modifier: Modifier, text: String, id: Int, labelText: String, readOnly: Boolean, onValueChangeEvent: (Int) -> Unit){
     val state = remember(id,labelText) { mutableStateOf(text) }
+
     val maxLength = 10
     //val borderColor = MaterialTheme.colorScheme.errorContainer// if (state.value.isEmpty()) { MaterialTheme.colorScheme.errorContainer } else { Color.Transparent }
     BasicTextField(
@@ -199,6 +213,7 @@ private fun StatModifier_TextField_IntegerInput(modifier: Modifier, text: String
         },
         readOnly = readOnly,
         textStyle = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSecondaryContainer),
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
         singleLine = true,
         decorationBox = { innerTextField ->
             Box(
