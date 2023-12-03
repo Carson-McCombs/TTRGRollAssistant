@@ -14,12 +14,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalCoroutinesApi::class)
+//@OptIn(ExperimentalCoroutinesApi::class)
 class StatViewModel(private val dao: StatDao): ViewModel() {
 
     private val _statIDs: Flow<List<Int>> = dao.getStatIDs()
 
-    private val _relatedStats: StateFlow<Map<Int, List<Int>>> = dao.getDependentStats().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+    private val _relatedStats: StateFlow<Map<Int, List<Int>>> = dao.getDependentStats().stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
     //private val _unrelatedStats: StateFlow<Map<Int, List<Int>>> = dao.getNonDependentStats().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
 
 
@@ -28,9 +28,8 @@ class StatViewModel(private val dao: StatDao): ViewModel() {
         getUnrelatedStats(ids, relStatIDs)
     }
 
-    val statTotals: StateFlow<Map<Int,Int>> = dao.getStatTotals().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
-    val statNames: StateFlow<Map<Int,String>> = dao.getAllStatNames().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
-
+    val statTotals: StateFlow<Map<Int,Int>> = dao.getStatTotals().stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
+    val statNames: StateFlow<Map<Int,String>> = dao.getAllStatNames().stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
 
     private fun getUnrelatedStats(ids: List<Int>, relStatIDs: Map<Int,List<Int>>): Map<Int, List<Int>>{
