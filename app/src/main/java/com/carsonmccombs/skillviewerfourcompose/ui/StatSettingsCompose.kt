@@ -1,6 +1,10 @@
 package com.carsonmccombs.skillviewerfourcompose.ui
 
+
 import androidx.compose.foundation.background
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,13 +14,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,8 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.carsonmccombs.skillviewerfourcompose.stat.Stat
 import com.carsonmccombs.skillviewerfourcompose.stat.StatEvent
-
-
+import com.carsonmccombs.skillviewerfourcompose.ui.theme.SkillViewerFourComposeTheme
 
 
 @Composable
@@ -62,7 +76,7 @@ fun StatDeleteButton(modifier: Modifier = Modifier, stat: Stat, onEvent: (StatEv
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White,
-                contentColor = if (confirmState.value) Color.Red else Color.LightGray
+                contentColor = if (confirmState.value ) Color.Red else Color.LightGray
             ),
             onClick = {
                 if (!confirmState.value) {
@@ -72,9 +86,13 @@ fun StatDeleteButton(modifier: Modifier = Modifier, stat: Stat, onEvent: (StatEv
                     onEvent(StatEvent.Delete(stat))
 
                 }
-            }
+            },
+
+
         ) {
-            Text(text = if (confirmState.value) "CONFIRM DELETE" else "DELETE ${stat.name}")
+            Text(
+                text = if (confirmState.value) "CONFIRM DELETE" else "DELETE ${stat.name}"
+            )
         }
     }
 
@@ -176,5 +194,51 @@ fun StatSettingsCard_TopBar(stat: Stat , /*onEvent: (StatEvent) -> Unit,*/ swapT
 @Preview
 @Composable
 fun StatSettingsCard_Preview(){
-    StatSettings (stat = Stat(), {})
+    SkillViewerFourComposeTheme(dynamicColor = true) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            CollapsibleCard(
+                id = -1,
+                onStateChange = {},
+                titleBar = {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        IconButton(
+                            colors = IconButtonDefaults.iconButtonColors(
+                                disabledContainerColor = Color.Transparent,
+                                disabledContentColor = Color.Transparent
+                            ),
+                            enabled = true,
+                            onClick = {}
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Navigates to the Left Page"
+                            )
+                        }
+                        Text(text = "STAT NAME ( 0 ): 0}")
+                        IconButton(
+                            colors = IconButtonDefaults.iconButtonColors(disabledContainerColor = Color.Transparent, disabledContentColor = Color.Transparent),
+                            enabled = false,
+                            onClick = {}
+                        ){
+                            Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "Navigates to the Right Page")
+                        }
+                    }
+
+                }
+            ) {
+                StatSettings(stat = Stat())
+                {}
+            }
+        }
+    }
+
+
+
 }
