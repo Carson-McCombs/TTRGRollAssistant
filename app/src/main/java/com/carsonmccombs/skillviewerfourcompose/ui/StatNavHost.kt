@@ -140,7 +140,7 @@ fun StatNavHost(
             composable(
                 route = "rollable",
                 enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {-it}) },
-                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {-it}).plus(fadeOut(animationSpec = tween(500))) },
+                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {-it}) },
                 ){
                 StatRoll(statID, stat.name, statTotal)
             }
