@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -121,7 +123,7 @@ fun StatNameTextField(stat: Stat, onEvent: (StatEvent) -> Unit) {
         Spacer(modifier = Modifier.width(8.dp))
         BasicTextField(
             modifier = Modifier
-                .wrapContentSize()
+                //.wrapContentSize()
                 .padding(16.dp)
                 .background(
                     color = MaterialTheme.colorScheme.secondaryContainer,
@@ -136,7 +138,20 @@ fun StatNameTextField(stat: Stat, onEvent: (StatEvent) -> Unit) {
             textStyle = MaterialTheme.typography.bodyLarge.copy(
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary
-            )
+            ),
+            decorationBox = {textbox ->
+                Row(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(horizontal = 16.dp, vertical = 0.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                )
+                {
+                    textbox()
+                }
+
+            }
         )
     }
 
