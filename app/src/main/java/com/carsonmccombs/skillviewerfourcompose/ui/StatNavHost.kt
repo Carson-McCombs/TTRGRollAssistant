@@ -5,7 +5,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
@@ -41,7 +40,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.carsonmccombs.skillviewerfourcompose.stat.StatViewModel
-import com.carsonmccombs.skillviewerfourcompose.statbonus.StatBonusStandard
 import com.carsonmccombs.skillviewerfourcompose.statmodifier_relationship.StatWithModifiers
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -74,7 +72,7 @@ fun StatNavHost(
     //val navLocations = arrayOf("rollable","modifiers","settings")
 
     val showNavigationArrows = remember{ mutableStateOf(false) }
-
+    val animationDurationMillis = 200
 
     CollapsibleCard(
         id = statID,
@@ -139,18 +137,18 @@ fun StatNavHost(
         ){
             composable(
                 route = "rollable",
-                enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {-it}) },
-                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {-it}) },
+                enterTransition = { slideInHorizontally(animationSpec = tween(animationDurationMillis), initialOffsetX = {-it}) },
+                exitTransition = { slideOutHorizontally(animationSpec = tween(animationDurationMillis), targetOffsetX = {-it}) },
                 ){
                 StatRoll(statID, stat.name, statTotal)
             }
             composable(
                 route = "modifiers",
                 //route = "settings/modifiers",
-                enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {it}) },
-                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {-it}) },
-                popEnterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {-it}) },
-                popExitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {it})  },
+                enterTransition = { slideInHorizontally(animationSpec = tween(animationDurationMillis), initialOffsetX = {it}) },
+                exitTransition = { slideOutHorizontally(animationSpec = tween(animationDurationMillis), targetOffsetX = {-it}) },
+                popEnterTransition = { slideInHorizontally(animationSpec = tween(animationDurationMillis), initialOffsetX = {-it}) },
+                popExitTransition = { slideOutHorizontally(animationSpec = tween(animationDurationMillis), targetOffsetX = {it})  },
             ){
                 StatsCompose(
                     stat = stat,
@@ -159,10 +157,10 @@ fun StatNavHost(
             }
             composable(
                 route = "settings",
-                enterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {it}) },
-                exitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {-it}) },
-                popEnterTransition = { slideInHorizontally(animationSpec = tween(500), initialOffsetX = {it}) },
-                popExitTransition = { slideOutHorizontally(animationSpec = tween(500), targetOffsetX = {it}) },
+                enterTransition = { slideInHorizontally(animationSpec = tween(animationDurationMillis), initialOffsetX = {it}) },
+                exitTransition = { slideOutHorizontally(animationSpec = tween(animationDurationMillis), targetOffsetX = {-it}) },
+                popEnterTransition = { slideInHorizontally(animationSpec = tween(animationDurationMillis), initialOffsetX = {it}) },
+                popExitTransition = { slideOutHorizontally(animationSpec = tween(animationDurationMillis), targetOffsetX = {it}) },
             ){
                 StatSettings (
                     stat = stat, onEvent = viewmodel::onEvent
