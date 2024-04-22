@@ -1,0 +1,7 @@
+
+# Example of Home Screen of App
+
+ Each Tab is a "Stat" which can be dependent and modified by other Stats. Here the "Sword Attack" Stat is modified by a "Weapon Mod" stat "bonus" which increases its value by 2. It is also modified by the "Strength" status that is seen above it.  There is currently only one roll calculation you can make, which is a 20 sided dice roll plus your total bonus to the stat - calculated by floor(( 10 + sum of bonuses ) % 2).  I.e. if the Strength has a total value of 11, the roll would be 1d20 + 0. And if the Strength stat has a value of 21, the dice roll for Strenght would be 1d20 + 5. And when a stat modifies another stat, it always modifies the main stat linearly - i.e. a strenght of 11 would add 11 to the Sword Attack's total and a Strength stat of 21 would add 21 to the Sword Attack's total value. A stat can be modifiedf by more than one stat, but checks are done such that stats can not indirectly or directly modify themselves. In other words, a stat cannot be added that modifiers Strength and is modified by the Sword Attack. The checks to determine the stats and their dependencies are done through recursive SQL ( Kotlin Rooms ) which uses default Rooms calls and custom SQL Lite calls. 
+
+![Screenshot_20240421-233606](https://github.com/Carson-McCombs/TTRGRollAssistant/assets/130939367/76aef2a1-f4f8-4676-b69e-5f6270191b0e)
+![Screenshot_20240421-233624](https://github.com/Carson-McCombs/TTRGRollAssistant/assets/130939367/386de6ee-3c51-40bc-89f4-897cc7965d1b)
